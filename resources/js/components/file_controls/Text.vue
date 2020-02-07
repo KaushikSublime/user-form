@@ -5,7 +5,7 @@
                 :id="id"
                 v-model="val"
                 :required="isRequired"
-                @focus="getInputValue"
+                @blur="getInputValue"
             ></b-form-input>
         </b-form-group>
     </div>
@@ -21,7 +21,8 @@ export default {
     props: {
         lblName: {
             type: String,
-            default: "Name"
+            default: "Name",
+            required: true
         },
         id: {
             type: String,
@@ -34,8 +35,8 @@ export default {
     },
     methods: {
         getInputValue() {
-            console.log(this.val);
-            this.$emit("get-input-val", this.val);
+            this.$emit("getInputVal", { val: this.val, type: this.lblName });
+            // this.$emit("getInputVal", this.val);
         }
     }
 };
