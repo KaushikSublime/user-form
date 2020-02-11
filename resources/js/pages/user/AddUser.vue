@@ -21,7 +21,7 @@
           id="txtPhoneNo"
           @getInputVal="setInputData"
           class="col-md-8"
-          :class="{ 'error': $v.form.phone_number.$error }"
+          :class="{ 'error': $v.form.phone.$error }"
         />
         <text-area
           lblName="Address"
@@ -36,17 +36,17 @@
           id="txtZipCode"
           @getInputVal="setInputData"
           class="col-md-8"
-          :class="{ 'error': $v.form.zip_code.$error }"
+          :class="{ 'error': $v.form.zip.$error }"
         />
         <div
           class="error"
-          v-if="!$v.form.zip_code.minLength"
-        >ZipCode must have {{ $v.form.zip_code.$params.minLength.min }} digits.</div>
+          v-if="!$v.form.zip.minLength"
+        >ZipCode must have {{ $v.form.zip.$params.minLength.min }} digits.</div>
         <div
           class="error"
-          v-if="!$v.form.zip_code.maxLength"
-        >ZipCode not greter than {{ $v.form.zip_code.$params.maxLength.max }} digits.</div>
-        <div class="error" v-if="!$v.form.zip_code.numeric">Zipcode is numeric.</div>
+          v-if="!$v.form.zip.maxLength"
+        >ZipCode not greter than {{ $v.form.zip.$params.maxLength.max }} digits.</div>
+        <div class="error" v-if="!$v.form.zip.numeric">Zipcode is numeric.</div>
 
         <image-component
           lblName="UserProfile"
@@ -76,6 +76,7 @@ import TextComponent from "../../components/file_controls/Text.vue";
 import TextArea from "../../components/file_controls/TextArea.vue";
 import Number from "../../components/file_controls/Number.vue";
 import ImageComponent from "../../components/file_controls/Image.vue";
+
 import {
   required,
   email,
@@ -90,10 +91,10 @@ export default {
       form: {
         name: "",
         email: "",
-        phone_number: "",
+        phone: "",
         address: "",
-        zip_code: "",
-        user_profile: "",
+        zip: "",
+        profile: "",
         user_license: ""
       },
       submitStatus: false
@@ -109,12 +110,11 @@ export default {
     form: {
       name: { required },
       email: { required, email },
-      phone_number: {
-        required,
-        numeric
+      phone: {
+        required
       },
       address: { required },
-      zip_code: {
+      zip: {
         required,
         numeric,
         minLength: minLength(5),
@@ -137,9 +137,10 @@ export default {
             response =>
               function(response) {
                 if (response.success) {
-                  alert(response.msg);
+                  this.clearForm();
+                  alert(response.message);
                 } else {
-                  alert(response.msg);
+                  alert(response.message);
                 }
               }
           );
@@ -148,11 +149,15 @@ export default {
     },
     onReset(evt) {
       evt.preventDefault();
-      this.form = {};
-      this.submitStatus = null;
+      this.clearForm();
     },
     setInputData(data) {
       this.fieldWiseSetData(data);
+    },
+    clearForm() {
+      this.form = {};
+      this.$v = {};
+      this.submitStatus = null;
     },
     fieldWiseSetData(data) {
       switch (data.type) {
@@ -163,16 +168,16 @@ export default {
           this.form.email = data.val;
           break;
         case "PhoneNo":
-          this.form.phone_number = data.val;
+          this.form.phone = data.val;
           break;
         case "Address":
           this.form.address = data.val;
           break;
         case "ZipCode":
-          this.form.zip_code = data.val;
+          this.form.zip = data.val;
           break;
         case "UserProfile":
-          this.form.user_profile = data.val;
+          this.form.profile = data.val;
           break;
         case "UserLicense":
           this.form.user_license = data.val;
